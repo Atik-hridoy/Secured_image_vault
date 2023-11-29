@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:secured_image_vault/screens/main_screen.dart';
+import 'package:secured_image_vault/src/screens/main_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -16,7 +15,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _signIn() async {
     // Check if email and password are not empty
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showToast("Please enter valid email and password.");
+      // _showToast("Please enter valid email and password.");
       return;
     }
 
@@ -36,19 +35,8 @@ class _SignInScreenState extends State<SignInScreen> {
     } catch (e) {
       // Handle sign-in errors
       print("Sign-in failed: $e");
-      _showToast("Invalid email or password.");
       // You can show a snackbar or display an error message to the user
     }
-  }
-
-  void _showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
-    );
   }
 
   @override
