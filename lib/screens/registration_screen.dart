@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secured_image_vault/screens/main_screen.dart';
@@ -10,6 +11,8 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -19,6 +22,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String? _passwordErrorText;
 
   Future<void> _register() async {
+    // Check if any field is left blank
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _confirmPasswordController.text.isEmpty) {
+      _showToast("Please fill in all fields.");
+      return;
+    }
+
     // Validate that the password and confirm password match
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
@@ -28,11 +40,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
 
     try {
+      // Create user with email and password
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
+
+      // Store additional user data in Firebase Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'name': _nameController.text,
+        'email': _emailController.text,
+      });
 
       // Registration successful, navigate to the main screen
       Navigator.pushReplacement(
@@ -42,12 +61,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 MainScreen()), // Replace with your main screen
       );
 
-      print("Registration successful: ${userCredential.user!.uid}");
+      // Show a toast message
+      _showToast("Registration successful");
     } catch (e) {
       // Handle registration errors
       print("Registration failed: $e");
-      // You can show a snackbar or display an error message to the user
+      // Show a toast message
+      _showToast("Registration failed: $e");
     }
+  }
+
+  void _showToast(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   void _navigateToSignInScreen() {
