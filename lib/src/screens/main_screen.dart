@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:secured_image_vault/screens/upload_image_screen.dart';
+import 'package:secured_image_vault/src/screens/upload_image_screen.dart';
 
 class MainScreen extends StatelessWidget {
   @override

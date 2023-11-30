@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:secured_image_vault/screens/main_screen.dart';
-import 'package:secured_image_vault/screens/sign_in_screen.dart';
+import 'package:secured_image_vault/src/screens/main_screen.dart';
+import 'package:secured_image_vault/src/screens/sign_in_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
