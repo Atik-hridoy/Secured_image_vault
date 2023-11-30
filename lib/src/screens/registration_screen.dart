@@ -27,7 +27,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      _showToast("Please fill in all fields.");
+      //_showToast("Please fill in all fields.");
       return;
     }
 
