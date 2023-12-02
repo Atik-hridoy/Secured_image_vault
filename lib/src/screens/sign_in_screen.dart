@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:secured_image_vault/src/screens/main_screen.dart';
+import 'registration_screen.dart'; // Import your registration screen file
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _signIn() async {
     // Check if email and password are not empty
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      // _showToast("Please enter valid email and password.");
+      // _showToast("Please enter a valid email and password.");
       return;
     }
 
@@ -37,6 +38,13 @@ class _SignInScreenState extends State<SignInScreen> {
       print("Sign-in failed: $e");
       // You can show a snackbar or display an error message to the user
     }
+  }
+
+  void _signUp() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RegistrationScreen()),
+    );
   }
 
   @override
@@ -83,6 +91,11 @@ class _SignInScreenState extends State<SignInScreen> {
             ElevatedButton(
               onPressed: _signIn,
               child: Text('Sign In'),
+            ),
+            SizedBox(height: 8.0),
+            TextButton(
+              onPressed: _signUp,
+              child: Text("Don't have an account? Sign up here"),
             ),
           ],
         ),
