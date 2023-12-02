@@ -25,7 +25,7 @@ class MainScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => UploadImageScreen()),
                 );
               },
-              child: Text('Upload Image'),
+              child: Text('Upload Files'),
             ),
           ],
         ),
