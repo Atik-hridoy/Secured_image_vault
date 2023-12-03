@@ -3,7 +3,7 @@ import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+import 'package:file_picker/file_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,31 +26,28 @@ class UploadImageScreen extends StatefulWidget {
 class _UploadImageScreenState extends State<UploadImageScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
-  Uint8List? _imageBytes;
+  Uint8List? _fileBytes;
   double _uploadProgress = 0.0;
 
-  Future<void> _pickImage() async {
-    final html.FileUploadInputElement input = html.FileUploadInputElement()
-      ..click();
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    input.onChange.listen((html.Event e) {
-      final html.File file = input.files!.first;
-      final reader = html.FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onLoadEnd.listen((e) {
+      if (result != null) {
+        Uint8List fileBytes = result.files.first.bytes!;
         setState(() {
-          _imageBytes = reader.result as Uint8List;
+          _fileBytes = fileBytes;
         });
-      });
-    });
-
-    input.click();
+      }
+    } catch (e) {
+      print("Error picking file: $e");
+    }
   }
 
-  Future<void> _uploadImage() async {
-    if (_imageBytes == null) {
-      // No image selected
-      _showSnackBar("Please select an image first.");
+  Future<void> _uploadFile() async {
+    if (_fileBytes == null) {
+      // No file selected
+      _showSnackBar("Please select a file first.");
       return;
     }
 
@@ -63,10 +60,11 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
       }
 
       final userId = currentUser.uid;
-      final imagePath = 'images/$userId.png';
+      final fileName =
+          'files/$userId/${DateTime.now().millisecondsSinceEpoch}${_getFileExtension()}';
 
-      final storageRef = _storage.ref().child(imagePath);
-      final uploadTask = storageRef.putData(_imageBytes!);
+      final storageRef = _storage.ref().child(fileName);
+      final uploadTask = storageRef.putData(_fileBytes!);
 
       uploadTask.snapshotEvents.listen(
         (TaskSnapshot snapshot) {
@@ -78,20 +76,26 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
       );
 
       await uploadTask.whenComplete(() {
-        // Image uploaded successfully
-        _showSnackBar('Image uploaded to Firebase Storage');
+        // File uploaded successfully
+        _showSuccessDialog();
         setState(() {
           _uploadProgress = 0.0; // Reset progress after completion
         });
-
-        // Show success dialog
-        _showSuccessDialog();
       });
     } catch (e) {
       // Handle errors
-      print('Error uploading image: $e');
-      _showSnackBar('Error uploading image: $e');
+      print('Error uploading file: $e');
+      _showSnackBar('Error uploading file: $e');
     }
+  }
+
+  String _getFileExtension() {
+    if (_fileBytes == null) {
+      return ''; // Return an empty string if no file is selected
+    }
+
+    // Assuming the file extension is present in the FilePickerResult
+    return '.' + _fileBytes!.elementAt(0).toRadixString(16);
   }
 
   void _showSnackBar(String message) {
@@ -108,12 +112,12 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Success'),
-          content: Text('Image successfully uploaded.'),
-          actions: [
+          title: Text('Upload Success'),
+          content: Text('File uploaded successfully.'),
+          actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('OK'),
             ),
@@ -127,34 +131,33 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Image'),
+        title: Text('Upload File'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _imageBytes == null
+            _fileBytes == null
                 ? Container(
                     width: 200,
                     height: 200,
                     color: Colors.grey[300],
                     child: Icon(
-                      Icons.image,
+                      Icons.insert_drive_file,
                       size: 100,
                       color: Colors.grey[600],
                     ),
                   )
-                : Image.memory(
-                    _imageBytes!,
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
+                : Icon(
+                    Icons.insert_drive_file,
+                    size: 100,
+                    color: Colors.blue,
                   ),
             SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: _pickImage,
-              icon: Icon(Icons.image),
-              label: Text('Select Image'),
+              onPressed: _pickFile,
+              icon: Icon(Icons.attach_file),
+              label: Text('Select File'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.blue,
                 onPrimary: Colors.white,
@@ -162,8 +165,8 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _uploadImage,
-              child: Text('Upload Image'),
+              onPressed: _uploadFile,
+              child: Text('Upload File'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
                 onPrimary: Colors.white,
