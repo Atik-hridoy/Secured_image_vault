@@ -61,7 +61,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
 
       final userId = currentUser.uid;
       final fileName =
-          'files/$userId'; // You can customize the file path and name here
+          'files/$userId/${DateTime.now().millisecondsSinceEpoch}${_getFileExtension()}';
 
       final storageRef = _storage.ref().child(fileName);
       final uploadTask = storageRef.putData(_fileBytes!);
@@ -77,7 +77,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
 
       await uploadTask.whenComplete(() {
         // File uploaded successfully
-        _showSnackBar('File uploaded to Firebase Storage');
+        _showSuccessDialog();
         setState(() {
           _uploadProgress = 0.0; // Reset progress after completion
         });
@@ -89,12 +89,41 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
     }
   }
 
+  String _getFileExtension() {
+    if (_fileBytes == null) {
+      return ''; // Return an empty string if no file is selected
+    }
+
+    // Assuming the file extension is present in the FilePickerResult
+    return '.' + _fileBytes!.elementAt(0).toRadixString(16);
+  }
+
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: Duration(seconds: 2),
       ),
+    );
+  }
+
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Upload Success'),
+          content: Text('File uploaded successfully.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 
