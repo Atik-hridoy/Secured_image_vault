@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'gallery_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -61,7 +62,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
 
       final userId = currentUser.uid;
       final fileName =
-          'files/$userId/${DateTime.now().millisecondsSinceEpoch}${_getFileExtension()}';
+          'files/$userId/${DateTime.now().millisecondsSinceEpoch}.file';
 
       final storageRef = _storage.ref().child(fileName);
       final uploadTask = storageRef.putData(_fileBytes!);
@@ -77,7 +78,7 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
 
       await uploadTask.whenComplete(() {
         // File uploaded successfully
-        _showSuccessDialog();
+        _showSnackBar('File uploaded to Firebase Storage');
         setState(() {
           _uploadProgress = 0.0; // Reset progress after completion
         });
@@ -89,41 +90,12 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
     }
   }
 
-  String _getFileExtension() {
-    if (_fileBytes == null) {
-      return ''; // Return an empty string if no file is selected
-    }
-
-    // Assuming the file extension is present in the FilePickerResult
-    return '.' + _fileBytes!.elementAt(0).toRadixString(16);
-  }
-
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         duration: Duration(seconds: 2),
       ),
-    );
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Upload Success'),
-          content: Text('File uploaded successfully.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -169,6 +141,21 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
               child: Text('Upload File'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
+                onPrimary: Colors.white,
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                // Navigate to the GalleryScreen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GalleryScreen()),
+                );
+              },
+              child: Text('Go to Gallery'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.orange,
                 onPrimary: Colors.white,
               ),
             ),
