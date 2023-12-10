@@ -52,52 +52,63 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign In Screen'),
-        backgroundColor: Colors.amber.shade400,
+        backgroundColor: Colors.transparent, // Make app bar transparent
+        elevation: 0, // Remove shadow
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+      extendBodyBehindAppBar: true, // Extend body behind app bar
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.purple, Colors.green],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.email),
                 ),
-                prefixIcon: Icon(Icons.email),
+                keyboardType: TextInputType.emailAddress,
               ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.lock),
                 ),
-                prefixIcon: Icon(Icons.lock),
+                obscureText: true,
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _signIn,
-              child: Text('Sign In'),
-            ),
-            SizedBox(height: 8.0),
-            TextButton(
-              onPressed: _signUp,
-              child: Text("Don't have an account? Sign up here"),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _signIn,
+                child: Text('Sign In'),
+              ),
+              SizedBox(height: 8.0),
+              TextButton(
+                onPressed: _signUp,
+                child: Text("Don't have an account? Sign up here"),
+              ),
+            ],
+          ),
         ),
       ),
     );

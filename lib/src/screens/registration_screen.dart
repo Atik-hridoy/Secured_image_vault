@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:secured_image_vault/src/screens/main_screen.dart';
 import 'package:secured_image_vault/src/screens/sign_in_screen.dart';
@@ -93,85 +93,97 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration Screen'),
-        backgroundColor: Colors.amber.shade400,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Image(
+          image: AssetImage('2.jpg'),
+          fit: BoxFit.cover,
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Name',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('4.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.7),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.person),
                 ),
-                prefixIcon: Icon(Icons.person),
               ),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.7),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.email),
                 ),
-                prefixIcon: Icon(Icons.email),
+                keyboardType: TextInputType.emailAddress,
               ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                errorText: _passwordErrorText,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.7),
+                  errorText: _passwordErrorText,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.lock),
                 ),
-                prefixIcon: Icon(Icons.lock),
+                obscureText: true,
+                onChanged: (_) {
+                  setState(() {
+                    _passwordErrorText = null;
+                  });
+                },
               ),
-              obscureText: true,
-              onChanged: (_) {
-                setState(() {
-                  _passwordErrorText = null;
-                });
-              },
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _confirmPasswordController,
-              decoration: InputDecoration(
-                labelText: 'Confirm Password',
-                filled: true,
-                fillColor: Colors.amber.shade100,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  filled: true,
+                  fillColor: Colors.amber.shade100.withOpacity(0.7),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  prefixIcon: Icon(Icons.lock),
                 ),
-                prefixIcon: Icon(Icons.lock),
+                obscureText: true,
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _register,
-              child: Text('Register'),
-            ),
-            SizedBox(height: 8.0),
-            TextButton(
-              onPressed: _navigateToSignInScreen,
-              child: Text("Already have an account? Sign In"),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _register,
+                child: Text('Register'),
+              ),
+              SizedBox(height: 8.0),
+              TextButton(
+                onPressed: _navigateToSignInScreen,
+                child: Text("Already have an account? Sign In"),
+              ),
+            ],
+          ),
         ),
       ),
     );
