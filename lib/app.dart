@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:secured_image_vault/src/screens/gallery_screen.dart';
 import 'package:secured_image_vault/src/screens/sign_in_screen.dart';
 import 'package:secured_image_vault/src/screens/splash_screen.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      home: GalleryScreen(),
     );
   }
 }
